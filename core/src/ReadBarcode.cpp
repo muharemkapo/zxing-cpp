@@ -18,6 +18,7 @@
 #endif
 
 #include <climits>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
@@ -141,11 +142,13 @@ std::unique_ptr<BinaryBitmap> CreateBitmap(ZXing::Binarizer binarizer, const Ima
 
 Barcode ReadBarcode(const ImageView& _iv, const ReaderOptions& opts)
 {
+	std::cout<<"Something 1";
 	return FirstOrDefault(ReadBarcodes(_iv, ReaderOptions(opts).setMaxNumberOfSymbols(1)));
 }
 
 Barcodes ReadBarcodes(const ImageView& _iv, const ReaderOptions& opts)
 {
+	std::cout<<"Something 2";
 	if (sizeof(PatternType) < 4 && (_iv.width() > 0xffff || _iv.height() > 0xffff))
 		throw std::invalid_argument("Maximum image width/height is 65535");
 
@@ -170,10 +173,13 @@ Barcodes ReadBarcodes(const ImageView& _iv, const ReaderOptions& opts)
 #endif
 	LumImagePyramid pyramid(iv, opts.downscaleThreshold() * opts.tryDownscale(), opts.downscaleFactor());
 
+	std::cout<<"Something 3";
 	Barcodes res;
 	int maxSymbols = opts.maxNumberOfSymbols() ? opts.maxNumberOfSymbols() : INT_MAX;
+	std::cout<<"Something 4";
 	for (auto&& iv : pyramid.layers) {
 		auto bitmap = CreateBitmap(opts.binarizer(), iv);
+		std::cout<<"Something 5";
 		for (int close = 0; close <= (closedReader ? 1 : 0); ++close) {
 			if (close) {
 				// if we already inverted the image in the first round, we need to undo that first
